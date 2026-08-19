@@ -60,14 +60,28 @@ def semantic_analyze(result: dict[str, Any]) -> None:
     if w_exit < 0 or w_exit >= width or h_exit < 0 or h_exit >= height:
         raise ConfigError(f"Invalid value for EXIT: {result['EXIT']}")
 
+    if (
+        w_entry == w_exit
+        and h_entry == h_exit
+    ):
+        raise ConfigError("ENTRY and EXIT cannot be the same coordinate.")
+
     # Perfect
     if result["PERFECT"] not in ["True", "False"]:
         raise ConfigError(f"Invalid value for PERFECT: {result['PERFECT']}")
+
+    # SEED
+    if "SEED" in result:
+        try:
+            int(result["SEED"])
+        except ValueError:
+            raise ConfigError(f"Invalid value for SEED: {result['SEED']}")
 
 
 def sintax_validation_parse(file_content: str) -> dict[str, Any]:
     lines = file_content.splitlines()
     result: dict[str, Any] = {}
+    seen_keys = set()
 
     # Parse each line and validate syntax
     for line in lines:
@@ -81,6 +95,12 @@ def sintax_validation_parse(file_content: str) -> dict[str, Any]:
         value = value.strip()
         if not key or not value:
             raise ConfigError(f"Invalid line: {line}")
+
+        # Check for duplicate keys
+        if key in seen_keys:
+            raise ConfigError(f"Duplicate key: {key}")
+        seen_keys.add(key)
+
         result[key] = value
 
     # Semantic analysis
