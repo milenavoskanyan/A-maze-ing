@@ -96,7 +96,7 @@ class MazeGenerator:
         visited: List[List[bool]],
         want_visited: bool
     ) -> List[Tuple[int, int]]:
-        unvisited_cells: List[Tuple[int, int]] = []
+        neighbors: List[Tuple[int, int]] = []
 
         directions = (
             (0, 1),
@@ -111,9 +111,9 @@ class MazeGenerator:
 
             if (self._is_valid_cell(neighbor_r, neighbor_c) and
                     visited[neighbor_r][neighbor_c] == want_visited):
-                unvisited_cells.append((neighbor_r, neighbor_c))
+                neighbors.append((neighbor_r, neighbor_c))
 
-        return unvisited_cells
+        return neighbors
 
     def _place_42_pattern(
             self,
