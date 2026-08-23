@@ -6,6 +6,7 @@ PATTERN_42 = [
     [0, 0, 1, 0, 1, 1, 1]
 ]
 
+
 def is_42_cell(width: int, height: int, r: int, c: int) -> bool:
     if width < 9 or height < 7:
         return False

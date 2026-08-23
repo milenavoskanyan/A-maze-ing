@@ -1,7 +1,8 @@
 from typing import Any
 from pydantic import ValidationError
 from my_exceptions import ConfigError
-from .validator import Validator
+from validator import Validator
+
 
 def parse_to_dict(file_content: str) -> dict[str, Any]:
     lines = file_content.splitlines()
@@ -30,8 +31,8 @@ def parse_to_dict(file_content: str) -> dict[str, Any]:
 
     # ALlowed keys
     valid_keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT",
-                    "OUTPUT_FILE", "PERFECT", "SEED"]
-    
+                  "OUTPUT_FILE", "PERFECT", "SEED"]
+
     # Check for missing or invalid keys
     for key in valid_keys:
         if key not in result.keys() and key != "SEED":
@@ -46,15 +47,18 @@ def parse_to_dict(file_content: str) -> dict[str, Any]:
         result["HEIGHT"] = int(result["HEIGHT"])
 
         if ',' not in result["ENTRY"] or result["ENTRY"].count(',') != 1:
-                raise ConfigError(f"Invalid value for ENTRY: {result['ENTRY']}")
+            raise ConfigError(f"Invalid value for ENTRY: {result['ENTRY']}")
+
         result["ENTRY"] = tuple(map(int, result["ENTRY"].split(',')))
 
         if ',' not in result["EXIT"] or result["EXIT"].count(',') != 1:
-                raise ConfigError(f"Invalid value for EXIT: {result['EXIT']}")
+            raise ConfigError(f"Invalid value for EXIT: {result['EXIT']}")
+
         result["EXIT"] = tuple(map(int, result["EXIT"].split(',')))
 
         if result["PERFECT"] not in ["True", "False"]:
-            raise ConfigError(f"Invalid value for PERFECT: {result['PERFECT']}")
+            raise ConfigError(f"Invalid value for PERFECT: "
+                              f"{result['PERFECT']}")
 
         if "SEED" in result:
             result["SEED"] = int(result["SEED"])

@@ -1,6 +1,6 @@
 import random
 from typing import Tuple, List, Set
-from ..utils import is_42_cell, PATTERN_42
+from utils import is_42_cell, PATTERN_42
 
 
 class MazeGenerator:
@@ -9,8 +9,8 @@ class MazeGenerator:
             self,
             width: int,
             height: int,
-            perfect=True,
-            seed=None
+            perfect: bool = True,
+            seed: int | None = None
     ) -> None:
         self.width = width
         self.height = height
