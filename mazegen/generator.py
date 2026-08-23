@@ -1,29 +1,19 @@
 import random
 from typing import Tuple, List, Set
+from ..utils import is_42_cell, PATTERN_42
 
 
 class MazeGenerator:
-    PATTERN_42 = [
-        [1, 0, 0, 0, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 0, 1, 1, 1],
-        [0, 0, 1, 0, 1, 0, 0],
-        [0, 0, 1, 0, 1, 1, 1]
-    ]
 
     def __init__(
             self,
             width: int,
             height: int,
-            entry: Tuple[int, int],  # unused. do we need these here?
-            exit: Tuple[int, int],  # default values?
             perfect=True,
             seed=None
     ) -> None:
         self.width = width
         self.height = height
-        self.entry = entry
-        self.exit = exit
         self.perfect = perfect
         self.seed = seed
 
@@ -123,7 +113,7 @@ class MazeGenerator:
         start_row = (self.height - 5) // 2
         start_col = (self.width - 7) // 2
 
-        for r_idx, row_vals in enumerate(self.PATTERN_42):
+        for r_idx, row_vals in enumerate(PATTERN_42):
             for c_idx, val in enumerate(row_vals):
                 r = start_row + r_idx
                 c = start_col + c_idx
@@ -132,39 +122,24 @@ class MazeGenerator:
                     visited[r][c] = True
 
                     if (r_idx > 0 and
-                            self.PATTERN_42[r_idx - 1][c_idx] == 1):
+                            PATTERN_42[r_idx - 1][c_idx] == 1):
                         grid[r][c] &= ~1      # Remove North wall (1)
                         grid[r - 1][c] &= ~4  # neighbor wall
                     if (r_idx < 4 and
-                            self.PATTERN_42[r_idx + 1][c_idx] == 1):
+                            PATTERN_42[r_idx + 1][c_idx] == 1):
                         grid[r][c] &= ~4      # Remove South wall (4)
                         grid[r + 1][c] &= ~1  # neighbor wall
                     if (c_idx > 0 and
-                            self.PATTERN_42[r_idx][c_idx - 1] == 1):
+                            PATTERN_42[r_idx][c_idx - 1] == 1):
                         grid[r][c] &= ~8      # Remove West wall (8)
                         grid[r][c - 1] &= ~2  # neighbor wall
                     if (c_idx < 6 and
-                            self.PATTERN_42[r_idx][c_idx + 1] == 1):
+                            PATTERN_42[r_idx][c_idx + 1] == 1):
                         grid[r][c] &= ~2      # Remove East wall (2)
                         grid[r][c + 1] &= ~8  # neighbor wall
 
     def _has_42(self) -> bool:
         return self.width >= 9 and self.height >= 7
-
-    def _is_42_cell(self, r: int, c: int) -> bool:
-        if not self._has_42():
-            return False
-
-        start_row = (self.height - 5) // 2
-        start_col = (self.width - 7) // 2
-
-        pattern_r = r - start_row
-        pattern_c = c - start_col
-
-        if not (0 <= pattern_r < 5 and 0 <= pattern_c < 7):
-            return False
-
-        return self.PATTERN_42[pattern_r][pattern_c] == 1
 
     def _is_valid_cell(self, r: int, c: int) -> bool:
         return 0 <= r < self.height and 0 <= c < self.width
@@ -176,5 +151,5 @@ class MazeGenerator:
         return [
             (r, c)
             for r, c in neighbors
-            if not self._is_42_cell(r, c)
+            if not is_42_cell(self.width, self.height, r, c)
         ]
