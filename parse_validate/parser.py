@@ -73,7 +73,7 @@ def semantic_analyze(result: dict[str, Any]) -> None:
             raise ConfigError(f"Invalid value for SEED: {result['SEED']}")
 
 
-def sintax_validation_parse(file_content: str) -> dict[str, Any]:
+def parse_to_dict(file_content: str) -> dict[str, Any]:
     lines = file_content.splitlines()
     result: dict[str, Any] = {}
     seen_keys = set()
