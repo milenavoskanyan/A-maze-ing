@@ -59,6 +59,10 @@ def parse_to_dict(file_content: str) -> dict[str, Any]:
         if result["PERFECT"] not in ["True", "False"]:
             raise ConfigError(f"Invalid value for PERFECT: "
                               f"{result['PERFECT']}")
+        elif result["PERFECT"] == "True":
+            result["PERFECT"] = True
+        else:
+            result["PERFECT"] = False
 
         if "SEED" in result:
             result["SEED"] = int(result["SEED"])
