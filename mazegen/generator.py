@@ -21,10 +21,13 @@ class MazeGenerator:
         grid = [[15] * self.width for _ in range(self.height)]
         visited = [[False] * self.width for _ in range(self.height)]
 
+        if self.seed is not None:
+            random.seed(self.seed)
+
         if not self._has_42():
             print("Error: Maze size is too small to fit the '42' pattern.")
         else:
-            self._place_42_pattern(grid, visited)
+            self._place_42_pattern(visited)
 
         while True:
             start_r = random.randrange(self.height)
@@ -36,27 +39,66 @@ class MazeGenerator:
         visited[start_r][start_c] = True
 
         frontier: Set[Tuple[int, int]] = set()
-        frontier.update(self._get_neighbors(start_r, start_c, visited, False))
+        frontier.update(self._get_valid_neighbors(
+            start_r, start_c, visited, False)
+            )
 
         while frontier:
             cur_r, cur_c = random.choice(tuple(frontier))
             frontier.remove((cur_r, cur_c))
-            visited_neighbors = self._get_neighbors(
+            valid_neighbors = self._get_valid_neighbors(
                 cur_r, cur_c, visited, True
                 )
-            valid_neighbors = self._get_valid_neighbors(visited_neighbors)
             if valid_neighbors:
                 connect_to_r, connect_to_c = random.choice(valid_neighbors)
                 self._remove_wall(
                     cur_r, cur_c, connect_to_r, connect_to_c, grid
                     )
             visited[cur_r][cur_c] = True
-            unvisited_neighbors = self._get_neighbors(
+            unvisited_neighbors = self._get_valid_neighbors(
                 cur_r, cur_c, visited, False
                                                       )
-            frontier.update(self._get_valid_neighbors(unvisited_neighbors))
+            frontier.update(unvisited_neighbors)
+
+        if not self.perfect:
+            self._remove_dead_ends(grid)
 
         return grid
+
+    def _remove_dead_ends(self, grid: list[list[int]]) -> None:
+        for r in range(self.height):
+            for c in range(self.width):
+                # Skip the 42 pattern cells
+                if is_42_cell(self.width, self.height, r, c):
+                    continue
+
+                if self._is_dead_end(grid[r][c]):
+                    neighbors = []
+                    cell_val = grid[r][c]
+
+                    # Directions: (dr, dc, wall_bit)
+                    directions = [
+                        (-1, 0, 1),  # Nort
+                        (1, 0, 4),   # South
+                        (0, -1, 8),  # West
+                        (0, 1, 2)    # East
+                    ]
+
+                    for dr, dc, wall_bit in directions:
+                        nr, nc = r + dr, c + dc
+                        if self._is_valid_cell(nr, nc) and not is_42_cell(
+                            self.width, self.height, nr, nc
+                        ):
+                            if cell_val & wall_bit:
+                                neighbors.append((nr, nc))
+
+                    # Pick a valid closed neighbor and knock down the wall
+                    if neighbors:
+                        nr, nc = random.choice(neighbors)
+                        self._remove_wall(r, c, nr, nc, grid)
+
+    def _is_dead_end(self, cell_value: int) -> bool:
+        return cell_value in {7, 11, 13, 14}
 
     def _remove_wall(
         self,
@@ -79,7 +121,7 @@ class MazeGenerator:
             grid[r1][c1] &= ~2
             grid[r2][c2] &= ~8
 
-    def _get_neighbors(
+    def _get_valid_neighbors(
         self,
         r: int,
         c: int,
@@ -103,11 +145,14 @@ class MazeGenerator:
                     visited[neighbor_r][neighbor_c] == want_visited):
                 neighbors.append((neighbor_r, neighbor_c))
 
-        return neighbors
+        return [
+            (r, c)
+            for r, c in neighbors
+            if not is_42_cell(self.width, self.height, r, c)
+        ]
 
     def _place_42_pattern(
             self,
-            grid: List[List[int]],
             visited: List[List[bool]]
     ) -> None:
         start_row = (self.height - 5) // 2
@@ -121,35 +166,8 @@ class MazeGenerator:
                 if val == 1:
                     visited[r][c] = True
 
-                    if (r_idx > 0 and
-                            PATTERN_42[r_idx - 1][c_idx] == 1):
-                        grid[r][c] &= ~1      # Remove North wall (1)
-                        grid[r - 1][c] &= ~4  # neighbor wall
-                    if (r_idx < 4 and
-                            PATTERN_42[r_idx + 1][c_idx] == 1):
-                        grid[r][c] &= ~4      # Remove South wall (4)
-                        grid[r + 1][c] &= ~1  # neighbor wall
-                    if (c_idx > 0 and
-                            PATTERN_42[r_idx][c_idx - 1] == 1):
-                        grid[r][c] &= ~8      # Remove West wall (8)
-                        grid[r][c - 1] &= ~2  # neighbor wall
-                    if (c_idx < 6 and
-                            PATTERN_42[r_idx][c_idx + 1] == 1):
-                        grid[r][c] &= ~2      # Remove East wall (2)
-                        grid[r][c + 1] &= ~8  # neighbor wall
-
     def _has_42(self) -> bool:
         return self.width >= 9 and self.height >= 7
 
     def _is_valid_cell(self, r: int, c: int) -> bool:
         return 0 <= r < self.height and 0 <= c < self.width
-
-    def _get_valid_neighbors(
-        self,
-        neighbors: List[Tuple[int, int]]
-    ) -> List[Tuple[int, int]]:
-        return [
-            (r, c)
-            for r, c in neighbors
-            if not is_42_cell(self.width, self.height, r, c)
-        ]
