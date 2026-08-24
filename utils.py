@@ -6,6 +6,13 @@ PATTERN_42 = [
     [0, 0, 1, 0, 1, 1, 1]
 ]
 
+DIRECTIONS = (
+            (0, 1),
+            (1, 0),
+            (0, -1),
+            (-1, 0)
+        )
+
 
 def is_42_cell(width: int, height: int, r: int, c: int) -> bool:
     if width < 9 or height < 7:
@@ -21,3 +28,28 @@ def is_42_cell(width: int, height: int, r: int, c: int) -> bool:
         return False
 
     return PATTERN_42[pattern_r][pattern_c] == 1
+
+
+def is_valid_cell(height: int, width: int, r: int, c: int) -> bool:
+    return 0 <= r < height and 0 <= c < width
+
+
+def has_wall(
+    x1: int,
+    y1: int,
+    x2: int,
+    y2: int,
+    val: int
+) -> bool:
+    dx, dy = x2 - x1, y2 - y1
+
+    if dx == 1:
+        return bool(val & 1)
+    if dx == -1:
+        return bool(val & 2)
+    if dy == 1:
+        return bool(val & 4)
+    if dy == -1:
+        return bool(val & 8)
+
+    return True

@@ -1,6 +1,6 @@
 import random
 from typing import Tuple, List, Set
-from utils import is_42_cell, PATTERN_42
+from utils import is_42_cell, is_valid_cell, PATTERN_42, DIRECTIONS
 
 
 class MazeGenerator:
@@ -86,8 +86,11 @@ class MazeGenerator:
 
                     for dr, dc, wall_bit in directions:
                         nr, nc = r + dr, c + dc
-                        if self._is_valid_cell(nr, nc) and not is_42_cell(
-                            self.width, self.height, nr, nc
+                        if (
+                            is_valid_cell(self.height, self.width, nr, nc)
+                            and not is_42_cell(
+                                self.width, self.height, nr, nc
+                            )
                         ):
                             if cell_val & wall_bit:
                                 neighbors.append((nr, nc))
@@ -130,19 +133,14 @@ class MazeGenerator:
     ) -> List[Tuple[int, int]]:
         neighbors: List[Tuple[int, int]] = []
 
-        directions = (
-            (0, 1),
-            (1, 0),
-            (0, -1),
-            (-1, 0)
-        )
-
-        for dr, dc in directions:
+        for dr, dc in DIRECTIONS:
             neighbor_r = r + dr
             neighbor_c = c + dc
 
-            if (self._is_valid_cell(neighbor_r, neighbor_c) and
-                    visited[neighbor_r][neighbor_c] == want_visited):
+            if (
+                is_valid_cell(self.height, self.width, neighbor_r, neighbor_c)
+                and visited[neighbor_r][neighbor_c] == want_visited
+            ):
                 neighbors.append((neighbor_r, neighbor_c))
 
         return [
@@ -168,6 +166,3 @@ class MazeGenerator:
 
     def _has_42(self) -> bool:
         return self.width >= 9 and self.height >= 7
-
-    def _is_valid_cell(self, r: int, c: int) -> bool:
-        return 0 <= r < self.height and 0 <= c < self.width
