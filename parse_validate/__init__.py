@@ -1,3 +1,3 @@
-from .parser import parse_to_dict
+from .parser import parse_to_dict, read_maze_file
 
-__all__ = ["parse_to_dict"]
+__all__ = ["parse_to_dict", "read_maze_file"]

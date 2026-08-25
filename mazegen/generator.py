@@ -1,21 +1,22 @@
 import random
-from typing import Tuple, List, Set
+from typing import Any, Tuple, List, Set
 from utils import is_42_cell, is_valid_cell, PATTERN_42, DIRECTIONS
 
 
 class MazeGenerator:
+    width: int
+    height: int
+    perfect: bool
+    seed: Any
 
     def __init__(
             self,
-            width: int,
-            height: int,
-            perfect: bool = True,
-            seed: int | None = None
+            dict_config: dict[str, Any]
     ) -> None:
-        self.width = width
-        self.height = height
-        self.perfect = perfect
-        self.seed = seed
+        self.width = dict_config["WIDTH"]
+        self.height = dict_config["HEIGHT"]
+        self.perfect = dict_config["PERFECT"]
+        self.seed = dict_config.get("SEED", None)
 
     def generate(self) -> List[List[int]]:
         grid = [[15] * self.width for _ in range(self.height)]

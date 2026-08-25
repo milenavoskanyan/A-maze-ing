@@ -4,6 +4,11 @@ from my_exceptions import ConfigError
 from .validator import Validator
 
 
+def read_maze_file(file_path: str) -> str:
+    with open(file_path, "r") as f:
+        return f.read()
+
+
 def parse_to_dict(file_content: str) -> dict[str, Any]:
     lines = file_content.splitlines()
     result: dict[str, Any] = {}

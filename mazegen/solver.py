@@ -1,4 +1,5 @@
 from collections import deque
+import sys
 from utils import DIRECTIONS, has_wall, is_42_cell, is_valid_cell
 
 
@@ -66,53 +67,65 @@ def shortest_path(
     q_bwd.append(exit)
     parent_bwd[exit_r][exit_c] = None
 
-    while q_fwd and q_bwd:
-        fwd_r, fwd_c = q_fwd.popleft()
-        bwd_r, bwd_c = q_bwd.popleft()
+    while q_fwd or q_bwd:
+        # --- Expand Forward Step ---
+        if q_fwd:
+            fwd_r, fwd_c = q_fwd.popleft()
+            for dr, dc in DIRECTIONS:
+                neigh_fwd_r = fwd_r + dr
+                neigh_fwd_c = fwd_c + dc
 
-        for dr, dc in DIRECTIONS:
-            neigh_fwd_r = fwd_r + dr
-            neigh_fwd_c = fwd_c + dc
-            neigh_bwd_r = bwd_r + dr
-            neigh_bwd_c = bwd_c + dc
+                if everything_is_okay(
+                    grid,
+                    width,
+                    height,
+                    fwd_r,
+                    fwd_c,
+                    neigh_fwd_r,
+                    neigh_fwd_c,
+                    parent_fwd
+                ):
+                    parent_fwd[neigh_fwd_r][neigh_fwd_c] = (fwd_r, fwd_c)
+                    q_fwd.append((neigh_fwd_r, neigh_fwd_c))
+                    if parent_bwd[neigh_fwd_r][neigh_fwd_c] != (-1, -1):
+                        meet_point = (neigh_fwd_r, neigh_fwd_c)
+                        return reconstruct_path(
+                            parent_fwd,
+                            parent_bwd,
+                            meet_point
+                            )
 
-            if everything_is_okay(
-                grid,
-                width,
-                height,
-                fwd_r,
-                fwd_c,
-                neigh_fwd_r,
-                neigh_fwd_c,
-                parent_fwd
-            ):
-                parent_fwd[neigh_fwd_r][neigh_fwd_c] = (fwd_r, fwd_c)
-                res1: tuple[int, int] = (neigh_fwd_r, neigh_fwd_c)
-                q_fwd.append(res1)
-                if parent_bwd[neigh_fwd_r][neigh_fwd_c] != (-1, -1):
-                    # Path found
-                    meet_point = (neigh_fwd_r, neigh_fwd_c)
-                    return reconstruct_path(parent_fwd, parent_bwd, meet_point)
+        # --- Expand Backward Step ---
+        if q_bwd:
+            bwd_r, bwd_c = q_bwd.popleft()
+            for dr, dc in DIRECTIONS:
+                neigh_bwd_r = bwd_r + dr
+                neigh_bwd_c = bwd_c + dc
 
-            if everything_is_okay(
-                grid,
-                width,
-                height,
-                bwd_r,
-                bwd_c,
-                neigh_bwd_r,
-                neigh_bwd_c,
-                parent_bwd
-            ):
-                parent_bwd[neigh_bwd_r][neigh_bwd_c] = (bwd_r, bwd_c)
-                res2: tuple[int, int] = (neigh_bwd_r, neigh_bwd_c)
-                q_bwd.append(res2)
-                if parent_fwd[neigh_bwd_r][neigh_bwd_c] != (-1, -1):
-                    # Path found
-                    meet_point = (neigh_bwd_r, neigh_bwd_c)
-                    return reconstruct_path(parent_fwd, parent_bwd, meet_point)
+                if everything_is_okay(
+                    grid,
+                    width,
+                    height,
+                    bwd_r,
+                    bwd_c,
+                    neigh_bwd_r,
+                    neigh_bwd_c,
+                    parent_bwd
+                ):
+                    parent_bwd[neigh_bwd_r][neigh_bwd_c] = (bwd_r, bwd_c)
+                    q_bwd.append((neigh_bwd_r, neigh_bwd_c))
+                    if parent_fwd[neigh_bwd_r][neigh_bwd_c] != (-1, -1):
+                        meet_point = (neigh_bwd_r, neigh_bwd_c)
+                        return reconstruct_path(
+                            parent_fwd,
+                            parent_bwd,
+                            meet_point
+                            )
 
-    return []  # No path found
+    # No path found
+    print("Error: Random generation created an unreachable maze!")
+    sys.exit(1)
+    return []
 
 
 # Path to directions - > W N E S
