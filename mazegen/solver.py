@@ -15,9 +15,31 @@ def everything_is_okay(
     return (
         is_valid_cell(height, width, neigh_r, neigh_c)
         and not is_42_cell(width, height, neigh_r, neigh_c)
-        and has_wall(cur_c, cur_r, neigh_c, neigh_r, grid[cur_r][cur_c])
+        and not has_wall(cur_c, cur_r, neigh_c, neigh_r, grid[cur_r][cur_c])
         and parent[neigh_r][neigh_c] == (-1, -1)
     )
+
+
+def reconstruct_path(
+        parent_fwd: list[list[tuple[int, int] | None]],
+        parent_bwd: list[list[tuple[int, int] | None]],
+        meet_point: tuple[int, int]
+) -> list[tuple[int, int]]:
+    path: list[tuple[int, int]] = []
+
+    curr: tuple[int, int] | None = meet_point
+    while curr is not None:
+        path.append(curr)
+        curr = parent_fwd[curr[0]][curr[1]]
+
+    path.reverse()
+
+    curr = parent_bwd[meet_point[0]][meet_point[1]]
+    while curr is not None:
+        path.append(curr)
+        curr = parent_bwd[curr[0]][curr[1]]
+
+    return path
 
 
 def shortest_path(
@@ -44,7 +66,7 @@ def shortest_path(
     q_bwd.append(exit)
     parent_bwd[exit_r][exit_c] = None
 
-    while True:
+    while q_fwd and q_bwd:
         fwd_r, fwd_c = q_fwd.popleft()
         bwd_r, bwd_c = q_bwd.popleft()
 
@@ -64,8 +86,13 @@ def shortest_path(
                 neigh_fwd_c,
                 parent_fwd
             ):
+                parent_fwd[neigh_fwd_r][neigh_fwd_c] = (fwd_r, fwd_c)
                 res1: tuple[int, int] = (neigh_fwd_r, neigh_fwd_c)
                 q_fwd.append(res1)
+                if parent_bwd[neigh_fwd_r][neigh_fwd_c] != (-1, -1):
+                    # Path found
+                    meet_point = (neigh_fwd_r, neigh_fwd_c)
+                    return reconstruct_path(parent_fwd, parent_bwd, meet_point)
 
             if everything_is_okay(
                 grid,
@@ -77,5 +104,12 @@ def shortest_path(
                 neigh_bwd_c,
                 parent_bwd
             ):
+                parent_bwd[neigh_bwd_r][neigh_bwd_c] = (bwd_r, bwd_c)
                 res2: tuple[int, int] = (neigh_bwd_r, neigh_bwd_c)
-                q_fwd.append(res2)
+                q_bwd.append(res2)
+                if parent_fwd[neigh_bwd_r][neigh_bwd_c] != (-1, -1):
+                    # Path found
+                    meet_point = (neigh_bwd_r, neigh_bwd_c)
+                    return reconstruct_path(parent_fwd, parent_bwd, meet_point)
+
+    return []  # No path found
