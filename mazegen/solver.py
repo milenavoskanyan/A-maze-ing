@@ -113,3 +113,21 @@ def shortest_path(
                     return reconstruct_path(parent_fwd, parent_bwd, meet_point)
 
     return []  # No path found
+
+
+# Path to directions - > W N E S
+def path_to_directions(path: list[tuple[int, int]]) -> str:
+    directions: str = ""
+    for i in range(1, len(path)):
+        prev_r, prev_c = path[i - 1]
+        curr_r, curr_c = path[i]
+
+        if curr_r == prev_r and curr_c == prev_c + 1:
+            directions += "E"
+        elif curr_r == prev_r and curr_c == prev_c - 1:
+            directions += "W"
+        elif curr_r == prev_r + 1 and curr_c == prev_c:
+            directions += "S"
+        elif curr_r == prev_r - 1 and curr_c == prev_c:
+            directions += "N"
+    return directions

@@ -1,7 +1,7 @@
 from typing import Any
 from pydantic import ValidationError
 from my_exceptions import ConfigError
-from validator import Validator
+from .validator import Validator
 
 
 def parse_to_dict(file_content: str) -> dict[str, Any]:
