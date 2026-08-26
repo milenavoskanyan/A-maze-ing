@@ -1,5 +1,4 @@
 from collections import deque
-import sys
 from utils import DIRECTIONS, has_wall, is_42_cell, is_valid_cell
 
 
@@ -93,7 +92,7 @@ def shortest_path(
                             parent_fwd,
                             parent_bwd,
                             meet_point
-                            )
+                        )
 
         # --- Expand Backward Step ---
         if q_bwd:
@@ -120,11 +119,11 @@ def shortest_path(
                             parent_fwd,
                             parent_bwd,
                             meet_point
-                            )
+                        )
 
     # No path found
     print("Error: Random generation created an unreachable maze!")
-    #sys.exit(1)
+    # sys.exit(1)
     return []
 
 
