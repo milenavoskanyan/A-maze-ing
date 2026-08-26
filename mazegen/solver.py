@@ -124,7 +124,7 @@ def shortest_path(
 
     # No path found
     print("Error: Random generation created an unreachable maze!")
-    sys.exit(1)
+    #sys.exit(1)
     return []
 
 

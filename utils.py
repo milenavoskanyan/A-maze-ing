@@ -44,12 +44,12 @@ def has_wall(
     dx, dy = x2 - x1, y2 - y1
 
     if dx == 1:
-        return bool(val & 1)
+        return bool(val & 2)   # East
     if dx == -1:
-        return bool(val & 2)
+        return bool(val & 8)   # West
     if dy == 1:
-        return bool(val & 4)
+        return bool(val & 4)   # South
     if dy == -1:
-        return bool(val & 8)
+        return bool(val & 1)   # North
 
     return True
