@@ -14,6 +14,7 @@ from maze_display import (
 )
 """  """
 
+
 def generate_maze(
     config_dict: dict[str, Any],
 ) -> tuple[list[list[int]], list[tuple[int, int]]]:
@@ -44,7 +45,6 @@ def write_output_file(
     path: list[tuple[int, int]],
     config_dict: dict[str, Any],
 ) -> None:
-    """Write the complete maze grid, entry, exit, and direction path to the output file."""
     output_file = config_dict["OUTPUT_FILE"]
     width = config_dict["WIDTH"]
     height = config_dict["HEIGHT"]
@@ -52,7 +52,7 @@ def write_output_file(
     exit_ = config_dict["EXIT"]
 
     lines = []
-    
+
     # 1. Convert each cell's bitmask to a single hex character row by row
     for r in range(height):
         row_str = ""

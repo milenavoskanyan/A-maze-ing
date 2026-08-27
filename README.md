@@ -497,7 +497,22 @@ The project was developed using:
 * Python's built-in debugger
 * Terminal/CLI tools
 
-## AI Usage
+
+## Resources
+
+The following resources were used to understand the concepts involved in the project:
+
+* Prim's algorithm and minimum spanning trees.
+* Breadth-First Search and shortest-path algorithms.
+* Python documentation for lists, sets, tuples, file handling and the `random` module.
+* Python type hints and the `typing` module.
+* Pydantic documentation for data validation.
+* Flake8 documentation for Python code style.
+* Mypy documentation for static type checking.
+* Python packaging documentation for creating reusable packages.
+* The official A-Maze-ing project subject and the provided maze analysis script.
+
+### AI Usage
 
 AI tools were used as an assistance and learning resource during development.
 
@@ -515,20 +530,6 @@ They were used for:
 AI-generated suggestions were reviewed, tested and adapted before being used. The final code was checked manually and with tools such as Flake8 and Mypy.
 
 The goal was to use AI to assist with repetitive or difficult tasks while maintaining an understanding of the implemented code.
-
-## Resources
-
-The following resources were used to understand the concepts involved in the project:
-
-* Prim's algorithm and minimum spanning trees.
-* Breadth-First Search and shortest-path algorithms.
-* Python documentation for lists, sets, tuples, file handling and the `random` module.
-* Python type hints and the `typing` module.
-* Pydantic documentation for data validation.
-* Flake8 documentation for Python code style.
-* Mypy documentation for static type checking.
-* Python packaging documentation for creating reusable packages.
-* The official A-Maze-ing project subject and the provided maze analysis script.
 
 ## License
 

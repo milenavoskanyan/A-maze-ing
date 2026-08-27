@@ -147,6 +147,7 @@ def print_maze(
 
     print("\n".join(lines))
 
+
 def display_maze(
     maze: list[list[int]],
     path: list[tuple[int, int]],
