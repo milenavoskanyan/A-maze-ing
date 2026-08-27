@@ -1,6 +1,6 @@
 import random
 from typing import Any, Tuple, List, Set
-from utils import is_42_cell, is_valid_cell, PATTERN_42, DIRECTIONS
+from utils import is_42_cell, has_42, is_valid_cell, PATTERN_42, DIRECTIONS
 
 
 class MazeGenerator:
@@ -25,9 +25,7 @@ class MazeGenerator:
         if self.seed is not None:
             random.seed(self.seed)
 
-        if not self._has_42():
-            print("Error: Maze size is too small to fit the '42' pattern.")
-        else:
+        if has_42(self.width, self.height):
             self._place_42_pattern(visited)
 
         while True:
@@ -164,6 +162,3 @@ class MazeGenerator:
 
                 if val == 1:
                     visited[r][c] = True
-
-    def _has_42(self) -> bool:
-        return self.width >= 9 and self.height >= 7

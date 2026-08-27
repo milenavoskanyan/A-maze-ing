@@ -480,7 +480,6 @@ During development, the implementation was adjusted as problems were discovered 
 ### What Could Be Improved
 
 * More automated tests could be added for unusual maze dimensions and configurations.
-* The non-perfect generation could be further improved to consistently minimise dead ends.
 * The visualisation could be extended with a graphical interface.
 * More maze-generation algorithms could be supported in the future.
 
@@ -520,10 +519,8 @@ They were used for:
 
 * Explaining maze-generation algorithms such as Prim's algorithm.
 * Discussing data structures and maze representations.
-* Reviewing code for possible bugs and improvements.
 * Helping identify type-checking and linting issues.
 * Discussing configuration parsing and validation.
-* Improving the terminal visualisation.
 * Helping understand project requirements and organise the README.
 * Suggesting tests and edge cases.
 

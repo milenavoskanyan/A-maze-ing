@@ -1,6 +1,6 @@
 import os
 from typing import Optional, Any
-from utils import is_42_cell
+from utils import is_42_cell, has_42
 
 # Terminal colours
 COLORS = {
@@ -158,6 +158,8 @@ def display_maze(
     """Display the maze and the available controls matching the 42 subject."""
 
     clear_terminal()
+    if not has_42(config_dict['WIDTH'], config_dict['HEIGHT']):
+        print("Error: Maze size is too small to fit the '42' pattern.")
 
     print("=== A-Maze-ing ===")
     print(

@@ -53,3 +53,7 @@ def has_wall(
         return bool(val & 1)   # North
 
     return True
+
+
+def has_42(width: int, height: int) -> bool:
+    return width >= 9 and height >= 7
